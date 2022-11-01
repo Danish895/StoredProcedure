@@ -2,7 +2,7 @@
 {
     public class StoredProcedureQuery
 	{
-//        -- ================================================
+//-- ================================================
 //-- Template generated from Template Explorer using:
 //-- Create Procedure(New Menu).SQL
 //--
@@ -37,7 +37,21 @@
 //			UpdatePersons.PolicyExpiryDate as 'personpolicyexpirydate',
 //			UpdatePersons.Tenure as 'persontenure' ,
 //			UpdatePersons.Email as 'personemail',
-//			HtmlTemplates.HtmlTemplateContent as 'htmltemplate'
+//			HtmlTemplates.HtmlTemplateContent as 'htmltemplate',
+//			case when UpdatePersons.Email = '' then 0
+
+//						  when UpdatePersons.Email like '% %' then 0
+
+//						  when UpdatePersons.Email like ('%["(),:;<>\]%') then 0
+//                          when substring(UpdatePersons.Email, charindex('@', UpdatePersons.Email),len(UpdatePersons.Email)) like('%[!#$%&*+/=?^`_{|]%') then 0
+//                          when(left(UpdatePersons.Email,1) like('[-_.+]') or right(UpdatePersons.Email,1) like('[-_.+]')) then 0                                                                                    
+//                          when(UpdatePersons.Email like '%[%' or UpdatePersons.Email like '%]%') then 0
+//                          when UpdatePersons.Email LIKE '%@%@%' then 0
+
+//						  when UpdatePersons.Email NOT LIKE '_%@_%._%' then 0
+//                          else 1 
+
+//					  end as emailValidation
 //	INTO #temp from PolicyPdfGenerator.dbo.UpdatePersons 
 //	JOIN HtmlTemplates ON UpdatePersons.Id = HtmlTemplates.Id
 
@@ -96,8 +110,9 @@
 //		'Your Policy info  is saved ',
 //		REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(fi.htmltemplate,'{{Name}}', fi.personname),'{{PolicyNumber}}',fi.Personpolicynumber),'{{PersonAge}}',fi.personage),'{{PersonSalary}}',fi.personsalary),'{{PersonOccupation}}',fi.personoccupation),'{{PersonProductCode}}',fi.personproductcode),'{{PersonTenure}}',fi.persontenure),'{{PersonAPolicyExpiryDate}}',fi.personpolicyexpirydate),'{{PersonEmail}}',fi.personemail) AS 'Body',
 //		'Suyash' 
-//	FROM #temp fi
-//	SELECT * FROM @dummyDataset
+//	FROM #temp fi 
+//	where emailValidation!=0
+//	SELECT* FROM @dummyDataset
 
 
 //	INSERT INTO dbo.DataSet
@@ -106,6 +121,8 @@
 //	DROP Table #temp
 //END
 //GO
+
+
 
 
 	}
